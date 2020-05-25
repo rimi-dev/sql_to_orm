@@ -1,0 +1,5 @@
+<div name="{{ widget.name }}" contenteditable="true" id="id_{{ widget.name }}" {% include "widgets/attrs.html" %}>
+    {% if widget.value %}
+    {{ widget.value }}
+    {% endif %}
+</div>

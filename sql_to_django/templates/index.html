@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1 class="mb-5">SQL To Django ORM</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.query }}
+        <button type="submit" class="btn btn-primary btn-lg m-2"><i class="fas fa-sync-alt"></i></button>
+    </form>
+    <div class="card">
+        <div class="card-header">
+            Result
+        </div>
+        <div class="card-body">
+            {{ orm }}
+        </div>
+    </div>
+    <div class="text-left mt-5">
+    <p>Supported:SELECT, FROM, ORDER BY</p>
+    </div>
+{% endblock content %}
+
+{% block footer-script %}
+    <script>
+        // SQL keywords
+        const keywords = ["SELECT", "FROM", "WHERE", "ORDER", "GROUP", "BY", "LIKE", "BETWEEN", "NOT", "FALSE", "NULL", "TRUE", "NOT IN", "DESC", "(CASE", "WHEN", "THEN"];
+        // Keyup event
+        $("#input_query").bind('input paste', function (e) {
+            changeQuery(this, e);
+        });
+        $("#input_query").on("keyup", function (e) {
+            changeQuery(this, e);
+        });
+        $("button[type=submit]").click(function () {
+            $("#id_query").html($("#input_query").text());
+        });
+        function changeQuery(value, e) {
+            // Space key pressed
+            if (e.keyCode == 32 || e.keyCode == 13) {
+                var newHTML = "";
+                // Loop through words
+                $(value).text().replace(/[\s]+/g, " ").trim().split(" ").forEach(function (val) {
+                    // If word is statement
+                    if (keywords.indexOf(val.trim().toUpperCase()) > -1)
+                        newHTML += "<span class='statement'>" + val.toUpperCase() + "&nbsp;</span>";
+                    else
+                        newHTML += "<span class='other'>" + val + "&nbsp;</span>";
+                });
+                $(value).html(newHTML);
+                // Set cursor postion to end of text
+                var child = $(value).children();
+                var range = document.createRange();
+                var sel = window.getSelection();
+                range.setStart(child[child.length - 1], 1);
+                range.collapse(true);
+                sel.removeAllRanges();
+                sel.addRange(range);
+                value.focus();
+            }
+        }
+    </script>
+{% endblock %}

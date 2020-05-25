@@ -1,0 +1,10 @@
+#id_query {
+    height: 100px;
+    padding: 10px;
+    background-color: #343a40;
+    color: white;
+    font-size: 14px;
+}
+.statement {
+    color: orange;
+}
