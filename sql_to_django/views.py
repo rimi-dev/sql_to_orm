@@ -22,7 +22,7 @@ class IndexView(FormView):
         orm = []
         for key in query_dict:
             orm.append(QueryFuncManager.getQuery(f'{key}', query=query_dict[key]))
-        context['orm'] = orm
+        context['orm'] = ''.join(orm)
         return render(self.request, self.template_name, context)
 
     def form_invalid(self, form):

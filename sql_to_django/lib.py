@@ -6,7 +6,23 @@ def select_logic(query):
     query = re.split(r'from', query)
     target = list_whitespace_remove(query)
     table_name = target[1].split()
-    orm = f'{table_name[0]}.objects.values({target[0]})'
+    table_len = len(table_name)
+    columns = target[0].split(', ')
+    value_columns = ''
+    if table_len > 1:
+        table_named = table_name[1]
+        for item in columns:
+            if table_named in item:
+                if '*' in target[0]:
+                    value_columns += ''
+                else:
+                    value_columns += f'"{item[len(table_named)+1:]}", '
+    else:
+        if '*' in target[0]:
+            value_columns = ''
+        else:
+            value_columns = target[0]
+    orm = f'{table_name[0]}.objects.values({value_columns})'
     return orm
 
 
