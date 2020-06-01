@@ -5,7 +5,6 @@
 ### Django ###
 venv/
 .idea/
-manage.py
 *.log
 *.pot
 *.pyc

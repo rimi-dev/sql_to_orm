@@ -111,17 +111,3 @@ class QueryFuncManager(object):
         except KeyError:
             raise Exception(f"{contentType} is invalid content type")
 
-
-def get_column_named_table(columns):
-    result = ''
-    if '.' in columns:
-        column = columns.split('.')
-        if main_table == column[0]:
-            result += f'"{main_table}", '
-        else:
-            # todo: 다른 테이블의 column을 가져온 경우
-            pass
-    else:
-        result = f'"{main_table}", '
-    return result
-
