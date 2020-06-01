@@ -21,7 +21,7 @@ class IndexView(FormView):
         query_dict = list_to_dict(query)
         orm = []
         for key in query_dict:
-            orm.append(QueryFuncManager.getQuery(f'{key}', query=query_dict[key]))
+            orm.append(QueryFuncManager.get_query(f'{key}', query=query_dict[key]))
         context['orm'] = ''.join(orm)
         return render(self.request, self.template_name, context)
 

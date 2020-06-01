@@ -2,6 +2,38 @@ import re
 from common.lib import list_whitespace_remove
 
 
+class Table:
+    """
+    Table class
+    Author : rimi
+    Date : 2020. 05. 27
+    Description : get/set main table, get/set joined tables
+    """
+    main_table = []
+    joined_table = []
+
+    @classmethod
+    def set_main_table(cls, table, as_name_table):
+        cls.main_table.append([table, as_name_table])
+
+    @classmethod
+    def set_joined_table(cls, table, as_name_table):
+        cls.joined_table.append([table, as_name_table])
+
+    @classmethod
+    def get_main_table(cls):
+        return cls.main_table
+
+    @classmethod
+    def get_joined_table(cls):
+        return cls.joined_table
+
+
+class Select:
+    def __init__(self):
+        pass
+
+
 def select_logic(query):
     query = re.split(r'from', query)
     target = list_whitespace_remove(query)
@@ -10,13 +42,15 @@ def select_logic(query):
     columns = target[0].split(', ')
     value_columns = ''
     if table_len > 1:
-        table_named = table_name[1]
+        Table.set_main_table(table_name[0], table_name[1])
+        print(Table.get_main_table())
+        main_table = table_name[1]
         for item in columns:
-            if table_named in item:
+            if main_table in item:
                 if '*' in target[0]:
                     value_columns += ''
                 else:
-                    value_columns += f'"{item[len(table_named)+1:]}", '
+                    value_columns += f'"{item[len(main_table)+1:]}", '
     else:
         if '*' in target[0]:
             value_columns = ''
@@ -35,13 +69,16 @@ def left_outer_join_logic(query):
 
 
 def order_by_logic(query):
-    order_value = query[query.index("ORDER") + 2]
-    try:
-        if query.index("DESC"):
-            order_value = '-' + order_value
-    except:
-        pass
-    return f'.order_by("{order_value}")'
+    order_by_query = query.split()
+    len_order_by_query = len(order_by_query)
+    column = order_by_query[0]
+    # table name 이 있을경우
+    # To sort the records in descending order
+    sort = ''
+    if len_order_by_query > 1:
+        if order_by_query[1].lower() == 'desc':
+            sort = '-'
+    return f'.order_by("{sort}{column}")'
 
 
 def like(column, value):
@@ -66,10 +103,25 @@ class QueryFuncManager(object):
     }
 
     @classmethod
-    def getQuery(self, contentType, *args, **kwargs):
+    def get_query(cls, contentType, *args, **kwargs):
         try:
-            querysetFunc = self._queryMappingTable.get(contentType)
+            querysetFunc = cls._queryMappingTable.get(contentType)
             return querysetFunc(*args, **kwargs)
 
         except KeyError:
             raise Exception(f"{contentType} is invalid content type")
+
+
+def get_column_named_table(columns):
+    result = ''
+    if '.' in columns:
+        column = columns.split('.')
+        if main_table == column[0]:
+            result += f'"{main_table}", '
+        else:
+            # todo: 다른 테이블의 column을 가져온 경우
+            pass
+    else:
+        result = f'"{main_table}", '
+    return result
+
