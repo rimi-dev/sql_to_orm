@@ -9,12 +9,15 @@ class Table:
     Date : 2020. 05. 27
     Description : get/set main table, get/set joined tables
     """
-    main_table = []
+    main_table = ''
+    main_named_table = ''
     joined_table = []
 
     @classmethod
-    def set_main_table(cls, table, as_name_table):
-        cls.main_table.append([table, as_name_table])
+    def set_main_table(cls, table):
+        if len(table) > 1:
+            cls.main_named_table = table[1]
+        cls.main_table = table
 
     @classmethod
     def set_joined_table(cls, table, as_name_table):
@@ -28,10 +31,14 @@ class Table:
     def get_joined_table(cls):
         return cls.joined_table
 
+    @classmethod
+    def reset_joined_table(cls):
+        cls.joined_table = []
+
 
 class Select:
-    def __init__(self):
-        pass
+    def __init__(self, query):
+        return 'gg'
 
 
 def select_logic(query):
@@ -42,7 +49,7 @@ def select_logic(query):
     columns = target[0].split(', ')
     value_columns = ''
     if table_len > 1:
-        Table.set_main_table(table_name[0], table_name[1])
+        Table.set_main_table(table_name)
         print(Table.get_main_table())
         main_table = table_name[1]
         for item in columns:
@@ -95,7 +102,7 @@ def where_logic(query):
 
 class QueryFuncManager(object):
     _queryMappingTable = {
-        "select": select_logic,
+        "select": Select,
         "where": where_logic,
         "inner join": inner_join_logic,
         "left outer join": left_outer_join_logic,
@@ -105,8 +112,8 @@ class QueryFuncManager(object):
     @classmethod
     def get_query(cls, contentType, *args, **kwargs):
         try:
-            querysetFunc = cls._queryMappingTable.get(contentType)
-            return querysetFunc(*args, **kwargs)
+            query_func = cls._queryMappingTable.get(contentType)
+            return query_func(*args, **kwargs)
 
         except KeyError:
             raise Exception(f"{contentType} is invalid content type")
