@@ -36,11 +36,6 @@ class Table:
         cls.joined_table = []
 
 
-class Select:
-    def __init__(self, query):
-        return 'gg'
-
-
 def select_logic(query):
     query = re.split(r'from', query)
     target = list_whitespace_remove(query)
@@ -102,7 +97,7 @@ def where_logic(query):
 
 class QueryFuncManager(object):
     _queryMappingTable = {
-        "select": Select,
+        "select": select_logic,
         "where": where_logic,
         "inner join": inner_join_logic,
         "left outer join": left_outer_join_logic,
