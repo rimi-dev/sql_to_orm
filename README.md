@@ -8,7 +8,7 @@ But User know mininum basic SQL Query.
 ### 1. Setting
 Use the package manager [pip](https://pypi.org/project/pip/) to install foobar.
 ```bash
-pip install -R requirements.txt
+pip install -r requirements.txt
 ```
 ### 2. Run
 ```bash
