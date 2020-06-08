@@ -3,10 +3,6 @@
     <h1 class="mb-5">SQL To Django ORM</h1>
     <form method="post">
         {% csrf_token %}
-        <div class="custom-control custom-switch float-right">
-            {{ form.fk_check }}
-            <label class="custom-control-label" for="{{ form.fk_check.id_for_label }}">모든 FK Name 끝에 "_id"가 포함되어있음</label>
-        </div>
         {{ form.query }}
         <button type="submit" class="btn btn-primary btn-lg m-2"><i class="fas fa-sync-alt"></i></button>
     </form>
@@ -25,6 +21,13 @@
 
 {% block footer-script %}
     <script>
+    $(function () {
+        {% if messages %}
+            {% for message in messages %}
+                alert('{{ message.tags }}: {{ message.message }}');
+            {% endfor %}
+        {% endif %}
+    });
         // SQL keywords
         const keywords = ["SELECT", "FROM", "WHERE", "ORDER", "GROUP", "BY", "LIKE", "BETWEEN", "NOT", "FALSE", "NULL", "TRUE", "NOT IN", "DESC", "(CASE", "WHEN", "THEN"];
         // Keyup event
