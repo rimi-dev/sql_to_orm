@@ -14,10 +14,14 @@ class Table:
     joined_table = ''
 
     @classmethod
-    def __init__(cls, table):
+    def set_main_table(cls, table):
         if len(table) > 1:
             cls.main_named_table = table[1]
         cls.main_table = table[0]
+
+    @classmethod
+    def set_joined_table(cls, table):
+        pass
 
     @classmethod
     def get_main_table(cls):
@@ -41,7 +45,7 @@ class Select:
         columns = target[0].split(', ')
         value_columns = ''
         if table_len > 1:
-            Table(table_name)
+            Table.set_main_table(table_name)
             main_table_named = Table.get_main_named_table()
             for item in columns:
                 if main_table_named in item:
