@@ -65,11 +65,13 @@ class Select:
 
 
 class Join:
-    def inner_join_logic(query):
-        return query
+    @classmethod
+    def inner_join(cls, **kwargs):
+        print(kwargs)
 
-    def left_outer_join_logic(query):
-        return query
+    @classmethod
+    def left_outer_join(cls, **kwargs):
+        print(kwargs)
 
 
 class OrderBy:
@@ -108,8 +110,8 @@ class QueryFuncManager(object):
     _queryMappingTable = {
         "select": Select,
         "where": where_logic,
-        # "inner join": inner_join_logic,
-        # "left outer join": left_outer_join_logic,
+        "inner join": Join,
+        "left outer join": Join,
         "order by": OrderBy,
     }
 
