@@ -11,7 +11,7 @@ class Table:
     """
     main_named_table = ''
     main_table = ''
-    joined_table = ''
+    joined_table = []
 
     @classmethod
     def set_main_table(cls, table):
@@ -21,8 +21,9 @@ class Table:
         print(table[0])
 
     @classmethod
-    def set_joined_table(cls, table):
-        pass
+    def set_joined_table(cls, **kwargs):
+        print(kwargs)
+        cls.joined_table.append(kwargs)
 
     @classmethod
     def get_main_table(cls):
@@ -42,23 +43,16 @@ class Select:
         query = re.split(r'from', query)
         target = list_whitespace_remove(query)
         table_name = target[1].split()
-        table_len = len(table_name)
         columns = target[0].split(', ')
         value_columns = ''
         Table.set_main_table(table_name)
         main_table_named = Table.get_main_named_table()
-        if table_len > 1:
-            for item in columns:
-                if main_table_named in item:
-                    if '*' in target[0]:
-                        value_columns += ''
-                    else:
-                        value_columns += f'"{item[len(main_table_named) + 1:]}", '
-        else:
-            if '*' in target[0]:
-                value_columns = ''
-            else:
-                value_columns = target[0]
+        for item in columns:
+            if main_table_named in item:
+                if '*' in target[0]:
+                    value_columns += ''
+                else:
+                    value_columns += f'"{item}", '
         self._orm = f'{Table.get_main_table()}.objects.values({value_columns})'
 
     def get_orm(self):
@@ -68,7 +62,8 @@ class Select:
 class Join:
     @classmethod
     def inner_join(cls, **kwargs):
-        print(kwargs)
+        query = kwargs['query'].split()
+        Table.set_joined_table(table=query[0], named=query[1])
 
     @classmethod
     def left_outer_join(cls, **kwargs):
@@ -107,11 +102,11 @@ def where_logic(query):
     return f'.filter({query})'
 
 
-class QueryFuncManager(object):
+class QueryFuncManager:
     _queryMappingTable = {
         "select": Select,
         "where": where_logic,
-        "inner join": Join,
+        "inner join": Join.inner_join,
         "left outer join": Join,
         "order by": OrderBy,
     }
