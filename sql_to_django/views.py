@@ -17,7 +17,6 @@ class IndexView(FormView):
         try:
             query = re.split(r'(select|\w+\souter\sjoin|\w+\sjoin|where|\w+\sby)', form.data['query'])
             query = list_whitespace_remove(query)
-            print(query)
             query_dict = list_to_dict(query)
             print(query_dict)
             orm = []
