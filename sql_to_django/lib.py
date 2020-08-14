@@ -1,5 +1,5 @@
 import re
-from common.lib import list_whitespace_remove
+from common.lib import list_whitespace_remove, list_to_dict
 
 
 class Table:
@@ -76,9 +76,10 @@ class OrderBy:
         len_order_by_query = len(order_by_query)
         column = order_by_query[0]
         main_table_named = Table.get_main_named_table()
-        if main_table_named in column:
-            column = column.split('.')[1]
-        # table name 이 있을경우
+        if main_table_named:
+            # table name 이 있을경우
+            if main_table_named in column:
+                column = column.split('.')[1]
         # To sort the records in descending order
         sort = ''
         if len_order_by_query > 1:
@@ -90,22 +91,24 @@ class OrderBy:
         return self._orm
 
 
-def like(column, value):
-    return f'{column}__contains={value}, '
+class Where:
+    def __init__(self, query):
+        and_re = re.split(r'and', query, re.I)
+        print(and_re)
+        if 'and' in query:
+            pass
+        if 'or' in query:
+            pass
+        self._orm = f'.filter({query})'
 
-
-def use_not(value):
-    return f'~Q({value})'
-
-
-def where_logic(query):
-    return f'.filter({query})'
+    def get_orm(self):
+        return self._orm
 
 
 class QueryFuncManager:
     _queryMappingTable = {
         "select": Select,
-        "where": where_logic,
+        "where": Where,
         "inner join": Join.inner_join,
         "left outer join": Join,
         "order by": OrderBy,
