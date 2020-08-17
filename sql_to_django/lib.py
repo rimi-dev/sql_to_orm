@@ -14,14 +14,14 @@ class Table:
     joined_table = []
 
     @classmethod
-    def set_main_table(cls, table):
+    def update_main_table(cls, table):
         if len(table) > 1:
             cls.main_named_table = table[1]
         cls.main_table = table[0]
         print(table[0])
 
     @classmethod
-    def set_joined_table(cls, **kwargs):
+    def update_joined_table(cls, **kwargs):
         print(kwargs)
         cls.joined_table.append(kwargs)
 
@@ -36,7 +36,7 @@ class Table:
     @classmethod
     def get_joined_table(cls):
         return cls.joined_table
-
+    
 
 class Select:
     def __init__(self, query):
@@ -45,7 +45,7 @@ class Select:
         table_name = target[1].split()
         columns = target[0].split(', ')
         value_columns = ''
-        Table.set_main_table(table_name)
+        Table.update_main_table(table_name)
         main_table_named = Table.get_main_named_table()
         for item in columns:
             if main_table_named in item:
@@ -63,11 +63,15 @@ class Join:
     @classmethod
     def inner_join(cls, **kwargs):
         query = kwargs['query'].split()
-        Table.set_joined_table(table=query[0], named=query[1])
+        Table.update_joined_table(table=query[0], named=query[1])
+        print(Table.get_joined_table())
 
     @classmethod
     def left_outer_join(cls, **kwargs):
         print(kwargs)
+
+    def get_orm(self):
+        return self._orm
 
 
 class OrderBy:
