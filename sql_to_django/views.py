@@ -10,20 +10,22 @@ import re
 
 class IndexView(FormView):
     template_name = 'index.html'
-    form_class = QueryInputForm
+
+    def get_form(self, form_class=None):
+        return QueryInputForm(self.request.POST)
 
     def form_valid(self, form):
         context = self.get_context_data()
         try:
             query = re.split(r'(select|\w+\souter\sjoin|\w+\sjoin|where|\w+\sby)', form.data['query'])
             query = list_whitespace_remove(query)
-            print(query)
             query_dict = list_to_dict(query)
             print(query_dict)
             orm = []
             for key in query_dict:
                 orm.append(QueryFuncManager.get_query(f'{key}', query=query_dict[key]).get_orm())
             context['orm'] = ''.join(orm)
+            print(orm)
         except:
             messages.error(self.request, '올바르지 않은 문법입니다.')
         return render(self.request, self.template_name, context)
